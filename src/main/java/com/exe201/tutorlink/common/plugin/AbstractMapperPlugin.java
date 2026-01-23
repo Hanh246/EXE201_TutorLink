@@ -14,6 +14,12 @@ public abstract class AbstractMapperPlugin<MODEL extends BaseEntity, DTO, ID>
 
     protected final ModelMapper modelMapper;
 
+
+    @Override
+    public boolean supports(Class<?> delimiter) {
+        return modelClass.equals(delimiter);
+    }
+
     @Override
     public DTO toDto(MODEL model) {
         if (model == null)

@@ -1,0 +1,37 @@
+package com.exe201.tutorlink.main.entity;
+
+import com.exe201.tutorlink.common.entity.BaseEntity;
+import jakarta.persistence.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
+
+@Entity
+@Data
+@NoArgsConstructor
+@Table(name = "Parent")
+@EqualsAndHashCode(callSuper = true)
+public class Parents extends BaseEntity {
+    @OneToOne
+    @MapsId // Dùng chung Primary Key với Entity Users
+    @JoinColumn(name = "user_id")
+    private Users user;
+
+    @Column(name = "Name")
+    private String name;
+
+    @Column(name = "BirthDate")
+    private String birthDate;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "Parent_ID")
+    private List<Students> child;
+
+    @Column(name = "Gender")
+    private String gender;
+
+    @Column(name = "Address")
+    private String address;
+}
