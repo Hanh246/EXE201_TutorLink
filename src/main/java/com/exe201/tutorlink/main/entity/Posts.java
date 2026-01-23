@@ -1,7 +1,6 @@
 package com.exe201.tutorlink.main.entity;
 
 import com.exe201.tutorlink.common.entity.BaseEntity;
-import com.exe201.tutorlink.main.constants.RoleEnum;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -16,7 +15,7 @@ public class Posts extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "User_ID")
-    private Users tinh;
+    private Users users;
     @Column(name = "Content")
     private String content;
     @Column(name = "PostType")

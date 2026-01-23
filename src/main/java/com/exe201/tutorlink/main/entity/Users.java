@@ -2,9 +2,7 @@ package com.exe201.tutorlink.main.entity;
 
 import com.exe201.tutorlink.common.entity.BaseEntity;
 import com.exe201.tutorlink.main.constants.RoleEnum;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -23,4 +21,12 @@ public class Users extends BaseEntity {
     private String passwordHash;
     @Column(name = "Role")
     private RoleEnum role;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Tutors tutor;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Students student;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Parents parent;
 }
