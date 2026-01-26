@@ -31,14 +31,14 @@ public class Tutors extends BaseEntity {
     private String schoolName;
     @Column(name = "Major")
     private String major;
-    @JoinTable(
-            name = "tutor_subject",
-            joinColumns = @JoinColumn(name = "tutor_id"),
-            inverseJoinColumns = @JoinColumn(name = "subject_id")
-    )
-    private List<Subjects> subjects;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "tutor_id")
+    private List<TutorSubjects> subjects;
+
     @Column(name = "Strength")
     private String strength;
+
     @Column(name = "Price")
     private Integer price;
 
@@ -49,4 +49,8 @@ public class Tutors extends BaseEntity {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "tutor_id")
     private List<TutorGrades> grades;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "tutor_id")
+    private List<TutorDegrees> degrees;
 }

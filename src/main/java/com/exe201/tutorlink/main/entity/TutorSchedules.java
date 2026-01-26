@@ -1,9 +1,7 @@
 package com.exe201.tutorlink.main.entity;
 
 import com.exe201.tutorlink.common.entity.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -14,6 +12,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class TutorSchedules extends BaseEntity {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tutor_id", nullable = false)
+    private Tutors tutor;
     @Column(name = "DayOfWeek")
     private String dayOfWeek;
     @Column(name = "StartTime")
