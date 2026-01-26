@@ -1,15 +1,15 @@
 package com.exe201.tutorlink.main.dto;
 
 import com.exe201.tutorlink.main.constants.RoleEnum;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
 public class UserDTO {
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private Long id;
     private String email;
     private String phone;
     private String passwordHash;

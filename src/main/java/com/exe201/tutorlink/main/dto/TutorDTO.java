@@ -1,8 +1,6 @@
 package com.exe201.tutorlink.main.dto;
 
-import com.exe201.tutorlink.main.entity.Subjects;
-import com.exe201.tutorlink.main.entity.TutorGrades;
-import com.exe201.tutorlink.main.entity.TutorSchedules;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +10,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class TutorDTO {
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
     private String name;
     private Date birthDate;
@@ -19,9 +18,10 @@ public class TutorDTO {
     private String learnMode;
     private String schoolName;
     private String major;
-    private List<Subjects> subjects;
+    private List<TutorSubjectDTO> subjects;
     private String strength;
     private Integer price;
-    private List<TutorSchedules> schedules;
-    private List<TutorGrades> grades;
+    private List<TutorScheduleDTO> schedules;
+    private List<TutorGradeDTO> grades;
+    private List<TutorDegreeDTO> degrees;
 }

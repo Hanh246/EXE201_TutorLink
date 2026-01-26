@@ -1,8 +1,8 @@
 package com.exe201.tutorlink.main.plugin.mapper;
 
 import com.exe201.tutorlink.common.plugin.AbstractMapperPlugin;
-import com.exe201.tutorlink.main.dto.ParentDTO;
-import com.exe201.tutorlink.main.entity.Parents;
+import com.exe201.tutorlink.main.dto.*;
+import com.exe201.tutorlink.main.entity.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
@@ -19,4 +19,18 @@ public class ParentMapperPlugin extends AbstractMapperPlugin<Parents, ParentDTO,
         return List.of("name");
     }
 
+    @Override
+    protected void configureModelMapper(){
+        super.configureModelMapper();
+        modelMapper.typeMap(Students.class, StudentDTO.class);
+        modelMapper.typeMap(TutorSchedules.class, TutorScheduleDTO.class);
+        modelMapper.typeMap(TutorGrades.class, TutorGradeDTO.class);
+    }
+
+    @Override
+    protected void performCustomUpdate(Parents existingModel, ParentDTO dto) {
+        if (existingModel.getChild() != null) {
+            existingModel.getChild().forEach(s -> s.setParent(existingModel));
+        }
+    }
 }
