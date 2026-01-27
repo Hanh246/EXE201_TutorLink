@@ -1,20 +1,15 @@
 package com.exe201.tutorlink.main.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
 import java.util.List;
 
 @Data
 @NoArgsConstructor
-public class TutorDTO {
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Long id;
-    private String name;
-    private Date birthDate;
-    private String gender;
+@EqualsAndHashCode(callSuper = true)
+public class TutorDTO extends UserBaseDTO{
     private String learnMode;
     private String schoolName;
     private String major;
