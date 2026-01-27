@@ -1,18 +1,17 @@
 package com.exe201.tutorlink.main.dto;
 
-import com.exe201.tutorlink.main.constants.RoleEnum;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Data
 @NoArgsConstructor
-public class UserDTO {
+public class UserBaseDTO {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
-    private String email;
-    private String phone;
-    private String passwordHash;
-    private RoleEnum role;
-    private UserBaseDTO user;
+    private String name;
+    private Date birthDate;
+    private String gender;
 }
