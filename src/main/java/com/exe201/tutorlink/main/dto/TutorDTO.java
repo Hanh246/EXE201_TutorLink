@@ -13,10 +13,21 @@ public class TutorDTO extends UserBaseDTO{
     private String learnMode;
     private String schoolName;
     private String major;
+    private String location;
     private List<TutorSubjectDTO> subjects;
     private String strength;
     private Integer price;
     private List<TutorScheduleDTO> schedules;
     private List<TutorGradeDTO> grades;
     private List<TutorDegreeDTO> degrees;
+
+    public TutorDTO(String learnMode, String schoolName, String major,
+                    String location, String strength, Integer price) {
+        this.learnMode = learnMode;
+        this.schoolName = schoolName;
+        this.major = major;
+        this.location = location;
+        this.strength = strength;
+        this.price = price;
+    }
 }
