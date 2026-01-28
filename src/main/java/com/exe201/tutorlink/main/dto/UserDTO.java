@@ -14,5 +14,4 @@ public class UserDTO {
     private String phone;
     private String passwordHash;
     private RoleEnum role;
-    private UserBaseDTO user;
 }

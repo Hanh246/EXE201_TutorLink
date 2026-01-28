@@ -1,7 +1,7 @@
 package com.exe201.tutorlink.main.repository;
 
 import com.exe201.tutorlink.common.repository.AbstractCrudRepository;
-import com.exe201.tutorlink.main.entity.TutorSubjects;
+import com.exe201.tutorlink.main.entity.TutorGrades;
 import com.exe201.tutorlink.main.entity.Tutors;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -12,18 +12,18 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Repository
-public interface ITutorSubjectRepository extends AbstractCrudRepository<TutorSubjects, Long> {
+public interface ITutorGradeRepository extends AbstractCrudRepository<TutorGrades, Long> {
 
     @Query("""
             SELECT t
-            FROM TutorSubjects t
+            FROM TutorGrades t
             WHERE t.tutor.id = :tutorId
             AND t.deleted = false
             """)
-    List<TutorSubjects> findByTutorId(Long tutorId);
+    List<TutorGrades> findByTutorId(Long tutorId);
 
     @Modifying
     @Transactional
-    @Query("DELETE FROM TutorSubjects d WHERE d.tutor = :tutor")
+    @Query("DELETE FROM TutorGrades d WHERE d.tutor = :tutor")
     void deleteByTutor(@Param("tutor") Tutors tutor);
 }

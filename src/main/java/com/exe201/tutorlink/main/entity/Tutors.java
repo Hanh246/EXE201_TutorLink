@@ -7,7 +7,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
-import java.util.List;
 
 @Entity
 @Data
@@ -31,26 +30,12 @@ public class Tutors extends BaseEntity {
     private String schoolName;
     @Column(name = "Major")
     private String major;
-
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "tutor_id")
-    private List<TutorSubjects> subjects;
+    @Column(name = "Location")
+    private String location;
 
     @Column(name = "Strength")
     private String strength;
 
     @Column(name = "Price")
     private Integer price;
-
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "tutor_id")
-    private List<TutorSchedules> schedules;
-
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "tutor_id")
-    private List<TutorGrades> grades;
-
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "tutor_id")
-    private List<TutorDegrees> degrees;
 }

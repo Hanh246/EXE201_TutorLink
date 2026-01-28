@@ -34,4 +34,16 @@ public class Parents extends BaseEntity {
 
     @Column(name = "Address")
     private String address;
+
+
+    public void setChild(List<Students> child) {
+        if (this.child == null) {
+            this.child = child;
+        } else {
+            this.child.clear();
+            if (child != null) {
+                this.child.addAll(child);
+            }
+        }
+    }
 }
