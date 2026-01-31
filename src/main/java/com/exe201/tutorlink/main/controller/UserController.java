@@ -43,10 +43,10 @@ public class UserController{
     }
 
     @PostMapping("/register-confirm")
-    public ResponseEntity<?> confirmRegister(@RequestBody UserDTO dto, @RequestParam String otp) {
-        UserDTO created = userService.verifyAndSave(dto, otp);
+    public ResponseEntity<BaseResponse<UserBaseDTO>> confirmRegister(@RequestBody UserDTO dto, @RequestParam String otp) {
+        UserBaseDTO created = userService.verifyAndSave(dto, otp);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(BaseResponse.<UserDTO>builder().success(true).data(created).build());
+                .body(BaseResponse.<UserBaseDTO>builder().success(true).data(created).build());
     }
 
     @GetMapping("/login")

@@ -28,13 +28,13 @@ public class UserService {
     private final UserMapperPlugin userMapper;
     private final EmailService emailService;
 
-    public UserDTO save(UserDTO dto) {
+    public UserBaseDTO save(UserDTO dto) {
         var user = userMapper.toModel(dto);
         user.setPasswordHash(passwordEncoder.encode(dto.getPasswordHash()));
 
         setupUserRoleRelation(user, dto.getRole());
 
-        return userMapper.toDto(userRepository.save(user));
+        return getUserDetailsByRole(userRepository.save(user));
     }
 
     public UserBaseDTO login(LoginDTO dto) {
@@ -49,11 +49,10 @@ public class UserService {
         emailService.sendOtpEmail(dto.getEmail(), otp);
     }
 
-    public UserDTO verifyAndSave(UserDTO dto, String otp) {
+    public UserBaseDTO verifyAndSave(UserDTO dto, String otp) {
         if (emailService.validateOTP(dto.getEmail(), otp)) {
-            UserDTO savedUser = save(dto);
             emailService.clearOTP(dto.getEmail());
-            return savedUser;
+            return save(dto);
         } else {
             throw new RuntimeException("OTP_INVALID:Mã OTP không chính xác hoặc đã hết hạn!");
         }
