@@ -26,6 +26,7 @@ public class UserService {
     private final StudentCrudPlugin studentCrudPlugin;
     private final TutorCrudPlugin tutorCrudPlugin;
     private final UserMapperPlugin userMapper;
+    private final EmailService emailService;
 
     public UserDTO save(UserDTO dto) {
         var user = userMapper.toModel(dto);
@@ -41,6 +42,21 @@ public class UserService {
                 .filter(user -> passwordEncoder.matches(dto.getPassword(), user.getPasswordHash()))
                 .map(this::getUserDetailsByRole)
                 .orElse(null);
+    }
+
+    public void requestRegistration(UserDTO dto) {
+        String otp = emailService.generateOTP(dto.getEmail());
+        emailService.sendOtpEmail(dto.getEmail(), otp);
+    }
+
+    public UserDTO verifyAndSave(UserDTO dto, String otp) {
+        if (emailService.validateOTP(dto.getEmail(), otp)) {
+            UserDTO savedUser = save(dto);
+            emailService.clearOTP(dto.getEmail());
+            return savedUser;
+        } else {
+            throw new RuntimeException("OTP_INVALID:Mã OTP không chính xác hoặc đã hết hạn!");
+        }
     }
 
     private void setupUserRoleRelation(Users user, RoleEnum role) {
