@@ -1,7 +1,7 @@
 package com.exe201.tutorlink.main.controller;
 
 import com.exe201.tutorlink.main.entity.ChatMessage;
-import com.exe201.tutorlink.main.repository.ChatMessageRepository;
+import com.exe201.tutorlink.main.repository.IChatMessageRepository;
 import com.exe201.tutorlink.main.service.ChatRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Controller;
 public class ChatController {
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
-    @Autowired private ChatMessageRepository chatMessageRepository;
+    @Autowired private IChatMessageRepository chatMessageRepository;
     @Autowired private ChatRoomService chatRoomService;
 
     @MessageMapping("/chat")
