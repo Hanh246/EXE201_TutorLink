@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 public class StudentDTO extends UserBaseDTO{
     private String learnMode;
+    private String location;
     private String schoolName;
     private String grade;
 }

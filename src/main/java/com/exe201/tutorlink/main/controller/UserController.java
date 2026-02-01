@@ -6,7 +6,6 @@ import com.exe201.tutorlink.main.dto.UserBaseDTO;
 import com.exe201.tutorlink.main.dto.UserDTO;
 import com.exe201.tutorlink.main.service.UserService;
 import com.exe201.tutorlink.main.validator.UserValidator;
-import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,8 +46,8 @@ public class UserController{
                 .body(BaseResponse.<UserBaseDTO>builder().success(true).data(created).build());
     }
 
-    @GetMapping("/login")
-    public ResponseEntity<BaseResponse<com.exe201.tutorlink.main.dto.UserBaseDTO>> login(@ParameterObject LoginDTO dto) {
+    @PostMapping("/login")
+    public ResponseEntity<BaseResponse<com.exe201.tutorlink.main.dto.UserBaseDTO>> login(@RequestBody LoginDTO dto) {
         var created = userService.login(dto);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(BaseResponse.<UserBaseDTO>builder().success(true).data(created).build());

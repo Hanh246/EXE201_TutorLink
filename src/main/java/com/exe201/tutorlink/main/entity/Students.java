@@ -27,6 +27,8 @@ public class Students extends BaseEntity {
     private Date birthDate;
     @Column(name = "Gender")
     private String gender;
+    @Column(name = "Location")
+    private String location;
     @Column(name = "LearnMode")
     private String learnMode;
     @Column(name = "SchoolName")
