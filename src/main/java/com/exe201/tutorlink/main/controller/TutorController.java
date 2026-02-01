@@ -4,8 +4,9 @@ import com.exe201.tutorlink.common.controller.BaseController;
 import com.exe201.tutorlink.common.dto.pagination.PaginationMetadata;
 import com.exe201.tutorlink.common.dto.pagination.PaginationSearchDTO;
 import com.exe201.tutorlink.common.dto.response.PaginationResponse;
-import com.exe201.tutorlink.main.dto.TutorDTO;
-import com.exe201.tutorlink.main.dto.TutorSearchDTO;
+import com.exe201.tutorlink.main.dto.tutor.TutorDTO;
+import com.exe201.tutorlink.main.dto.tutor.TutorSearchDTO;
+import com.exe201.tutorlink.main.dto.tutor.TutorSearchFilterDTO;
 import com.exe201.tutorlink.main.entity.Tutors;
 import com.exe201.tutorlink.main.plugin.crud.TutorCrudPlugin;
 import jakarta.validation.Valid;
@@ -28,10 +29,10 @@ public class TutorController extends BaseController<Tutors, TutorDTO, Long, Pagi
     }
 
     @GetMapping("/search")
-    public ResponseEntity<PaginationResponse<List<TutorDTO>>> search(@Valid @ParameterObject TutorSearchDTO paginationDTO) {
+    public ResponseEntity<PaginationResponse<List<TutorSearchDTO>>> search(@Valid @ParameterObject TutorSearchFilterDTO paginationDTO) {
         var data = crudPlugin.getTutorBySearch(paginationDTO);
         return ResponseEntity
-                .ok(PaginationResponse.<List<TutorDTO>>builder()
+                .ok(PaginationResponse.<List<TutorSearchDTO>>builder()
                         .metadata(
                                 new PaginationMetadata(
                                         paginationDTO.getPage(),

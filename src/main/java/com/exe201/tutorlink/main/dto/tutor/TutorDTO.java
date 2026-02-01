@@ -1,5 +1,6 @@
-package com.exe201.tutorlink.main.dto;
+package com.exe201.tutorlink.main.dto.tutor;
 
+import com.exe201.tutorlink.main.dto.UserBaseDTO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -9,7 +10,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class TutorDTO extends UserBaseDTO{
+public class TutorDTO extends UserBaseDTO {
     private String learnMode;
     private String schoolName;
     private String major;
@@ -20,14 +21,4 @@ public class TutorDTO extends UserBaseDTO{
     private List<TutorScheduleDTO> schedules;
     private List<TutorGradeDTO> grades;
     private List<TutorDegreeDTO> degrees;
-
-    public TutorDTO(String learnMode, String schoolName, String major,
-                    String location, String strength, Integer price) {
-        this.learnMode = learnMode;
-        this.schoolName = schoolName;
-        this.major = major;
-        this.location = location;
-        this.strength = strength;
-        this.price = price;
-    }
 }

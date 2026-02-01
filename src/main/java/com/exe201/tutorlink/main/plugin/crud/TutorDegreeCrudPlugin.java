@@ -3,7 +3,7 @@ package com.exe201.tutorlink.main.plugin.crud;
 import com.exe201.tutorlink.common.dto.pagination.PaginationSearchDTO;
 import com.exe201.tutorlink.common.plugin.AbstractCrudPlugin;
 import com.exe201.tutorlink.common.plugin.IMapperPlugin;
-import com.exe201.tutorlink.main.dto.TutorDegreeDTO;
+import com.exe201.tutorlink.main.dto.tutor.TutorDegreeDTO;
 import com.exe201.tutorlink.main.entity.TutorDegrees;
 import com.exe201.tutorlink.main.entity.Tutors;
 import com.exe201.tutorlink.main.repository.ITutorDegreeRepository;

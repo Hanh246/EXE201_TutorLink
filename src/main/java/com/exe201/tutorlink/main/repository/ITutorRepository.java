@@ -20,6 +20,7 @@ public interface ITutorRepository extends AbstractCrudRepository<Tutors, Long> {
                   AND (:area IS NULL OR t.location = :area)
                   AND (:subjects IS NULL OR s.subjectName IN :subjects)
                   AND (:grades IS NULL OR g.grade IN :grades)
+                  AND t.name IS NOT NULL
                   AND t.deleted = false""")
     Page<Tutors> search(Pageable pageable, String search, List<String> subjects, List<String> grades, String area);
 }

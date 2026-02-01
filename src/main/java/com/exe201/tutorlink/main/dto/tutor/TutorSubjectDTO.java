@@ -1,4 +1,4 @@
-package com.exe201.tutorlink.main.dto;
+package com.exe201.tutorlink.main.dto.tutor;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;

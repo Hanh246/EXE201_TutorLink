@@ -1,6 +1,7 @@
 package com.exe201.tutorlink.main.repository;
 
 import com.exe201.tutorlink.common.repository.AbstractCrudRepository;
+import com.exe201.tutorlink.main.dto.tutor.TutorSubjectSubDTO;
 import com.exe201.tutorlink.main.entity.TutorSubjects;
 import com.exe201.tutorlink.main.entity.Tutors;
 import org.springframework.data.jpa.repository.Modifying;
@@ -21,6 +22,19 @@ public interface ITutorSubjectRepository extends AbstractCrudRepository<TutorSub
             AND t.deleted = false
             """)
     List<TutorSubjects> findByTutorId(Long tutorId);
+
+    @Query("""
+            SELECT new com.exe201.tutorlink.main.dto.tutor.TutorSubjectSubDTO(
+                    s.id,
+                    t.id,
+                    s.subjectName
+                )
+            FROM TutorSubjects s
+            LEFT JOIN s.tutor t
+            WHERE s.tutor.id IN :tutorId
+            AND s.deleted = false
+            """)
+    List<TutorSubjectSubDTO> findByListTutorId(List<Long> tutorId);
 
     @Modifying
     @Transactional
