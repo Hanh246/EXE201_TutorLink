@@ -2,8 +2,14 @@ package com.exe201.tutorlink.main.controller;
 
 import com.exe201.tutorlink.common.dto.response.BaseResponse;
 import com.exe201.tutorlink.main.dto.LoginDTO;
+import com.exe201.tutorlink.main.dto.LoginResponseDTO;
 import com.exe201.tutorlink.main.dto.UserBaseDTO;
 import com.exe201.tutorlink.main.dto.UserDTO;
+import com.exe201.tutorlink.main.dto.token.RefreshTokenRequest;
+import com.exe201.tutorlink.main.dto.token.TokenRefreshResponse;
+import com.exe201.tutorlink.main.entity.RefreshToken;
+import com.exe201.tutorlink.main.service.JwtService;
+import com.exe201.tutorlink.main.service.RefreshTokenService;
 import com.exe201.tutorlink.main.service.UserService;
 import com.exe201.tutorlink.main.validator.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +24,10 @@ public class UserController{
     private UserService userService;
     @Autowired
     private UserValidator validation;
+    @Autowired
+    private JwtService jwtService;
+    @Autowired
+    private RefreshTokenService refreshTokenService;
 
     @PostMapping("/register-request")
     public ResponseEntity<BaseResponse<String>> requestOtp(@RequestBody UserDTO dto) {
@@ -47,9 +57,34 @@ public class UserController{
     }
 
     @PostMapping("/login")
-    public ResponseEntity<BaseResponse<com.exe201.tutorlink.main.dto.UserBaseDTO>> login(@RequestBody LoginDTO dto) {
+    public ResponseEntity<BaseResponse<LoginResponseDTO>> login(@RequestBody LoginDTO dto) {
         var created = userService.login(dto);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(BaseResponse.<UserBaseDTO>builder().success(true).data(created).build());
+                .body(BaseResponse.<LoginResponseDTO>builder().success(true).data(created).build());
+    }
+
+    @PostMapping("/refresh-token")
+    public ResponseEntity<BaseResponse<TokenRefreshResponse>> refreshToken(@RequestBody RefreshTokenRequest request) {
+        String requestRefreshToken = request.getRefreshToken();
+
+        TokenRefreshResponse responseData = refreshTokenService.findByToken(requestRefreshToken)
+                .map(refreshTokenService::verifyExpiration)
+                .map(RefreshToken::getUser)
+                .map(user -> {
+                    String newAccessToken = jwtService.generateToken(user);
+                    return TokenRefreshResponse.builder()
+                            .accessToken(newAccessToken)
+                            .refreshToken(requestRefreshToken)
+                            .build();
+                })
+                .orElseThrow(() -> new RuntimeException("Refresh token is not in database!"));
+
+        return ResponseEntity.ok(
+                BaseResponse.<TokenRefreshResponse>builder()
+                        .success(true)
+                        .data(responseData)
+                        .message("Refresh token successfully")
+                        .build()
+        );
     }
 }
