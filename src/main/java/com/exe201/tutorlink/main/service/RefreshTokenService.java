@@ -26,8 +26,9 @@ public class RefreshTokenService {
 
     @Transactional
     public RefreshToken createRefreshToken(Users user) {
-        // Xóa token cũ của user nếu có để tránh lãng phí DB
         refreshTokenRepository.deleteByUser(user);
+
+        refreshTokenRepository.flush();
 
         RefreshToken refreshToken = new RefreshToken();
         refreshToken.setUser(user);
@@ -40,7 +41,7 @@ public class RefreshTokenService {
     public RefreshToken verifyExpiration(RefreshToken token) {
         if (token.getExpiryDate().compareTo(Instant.now()) < 0) {
             refreshTokenRepository.delete(token);
-            throw new RuntimeException("Refresh token was expired. Please make a new signin request");
+            throw new RuntimeException("Refresh token đã quá hạn. Hãy đăng nhập lại");
         }
         return token;
     }
