@@ -2,12 +2,10 @@ package com.exe201.tutorlink.main.service;
 
 import com.exe201.tutorlink.main.constants.RoleEnum;
 import com.exe201.tutorlink.main.dto.LoginDTO;
+import com.exe201.tutorlink.main.dto.LoginResponseDTO;
 import com.exe201.tutorlink.main.dto.UserBaseDTO;
 import com.exe201.tutorlink.main.dto.UserDTO;
-import com.exe201.tutorlink.main.entity.Parents;
-import com.exe201.tutorlink.main.entity.Students;
-import com.exe201.tutorlink.main.entity.Tutors;
-import com.exe201.tutorlink.main.entity.Users;
+import com.exe201.tutorlink.main.entity.*;
 import com.exe201.tutorlink.main.plugin.crud.ParentCrudPlugin;
 import com.exe201.tutorlink.main.plugin.crud.StudentCrudPlugin;
 import com.exe201.tutorlink.main.plugin.crud.TutorCrudPlugin;
@@ -27,6 +25,8 @@ public class UserService {
     private final TutorCrudPlugin tutorCrudPlugin;
     private final UserMapperPlugin userMapper;
     private final EmailService emailService;
+    private final JwtService jwtService;
+    private final RefreshTokenService refreshTokenService;
 
     public UserBaseDTO save(UserDTO dto) {
         var user = userMapper.toModel(dto);
@@ -37,11 +37,20 @@ public class UserService {
         return getUserDetailsByRole(userRepository.save(user));
     }
 
-    public UserBaseDTO login(LoginDTO dto) {
-        return userRepository.findByEmail(dto.getEmail())
-                .filter(user -> passwordEncoder.matches(dto.getPassword(), user.getPasswordHash()))
-                .map(this::getUserDetailsByRole)
-                .orElse(null);
+    public LoginResponseDTO login(LoginDTO dto) {
+        Users user = userRepository.findByEmail(dto.getEmail())
+                .orElseThrow(() -> new RuntimeException("Email không tồn tại"));
+        if (passwordEncoder.matches(dto.getPassword(), user.getPasswordHash())) {
+            String accessToken = jwtService.generateToken(user);
+            RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
+
+            return LoginResponseDTO.builder()
+                    .accessToken(accessToken)
+                    .refreshToken(refreshToken.getToken())
+                    .userDetails(getUserDetailsByRole(user))
+                    .build();
+        }
+        throw new RuntimeException("Sai thông tin đăng nhập");
     }
 
     public void requestRegistration(UserDTO dto) {
