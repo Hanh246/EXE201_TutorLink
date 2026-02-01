@@ -1,11 +1,10 @@
 package com.exe201.tutorlink.main.service;
 
+import com.exe201.tutorlink.main.client.SendGridClient;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import java.util.Random;
@@ -14,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 @Service
 @RequiredArgsConstructor
 public class EmailService {
-    private final JavaMailSender mailSender;
+    private final SendGridClient sendGridClient;
 
     @Value("${app.mail.from}")
     private String fromEmail;
@@ -30,12 +29,10 @@ public class EmailService {
     }
 
     public void sendOtpEmail(String to, String otp) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(fromEmail);
-        message.setTo(to);
-        message.setSubject("Mã xác thực OTP - TutorLink");
-        message.setText("Mã OTP của bạn là: " + otp + ". Mã có hiệu lực trong 5 phút.");
-        mailSender.send(message);
+        String subject = "Mã xác thực OTP - TutorLink";
+        String content = "Mã OTP của bạn là: " + otp + ". Mã có hiệu lực trong 5 phút.";
+
+        sendGridClient.send(fromEmail, to, subject, content);
     }
 
     public boolean validateOTP(String email, String otp) {
