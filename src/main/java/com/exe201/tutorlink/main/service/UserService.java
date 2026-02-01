@@ -83,7 +83,7 @@ public class UserService {
     private UserBaseDTO getUserDetailsByRole(Users user) {
         return switch (user.getRole()) {
             case PARENT -> parentCrudPlugin.read(user.getId()).orElse(null);
-            case STUDENT -> studentCrudPlugin.read(user.getId()).orElse(null);
+            case STUDENT -> studentCrudPlugin.getStudentByUserId(user.getId()).orElse(null);
             case TUTORS -> tutorCrudPlugin.read(user.getId()).orElse(null);
             default -> null;
         };
