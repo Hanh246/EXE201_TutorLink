@@ -3,7 +3,8 @@ package com.exe201.tutorlink.main.plugin.crud;
 import com.exe201.tutorlink.common.dto.pagination.PaginationSearchDTO;
 import com.exe201.tutorlink.common.plugin.AbstractCrudPlugin;
 import com.exe201.tutorlink.common.plugin.IMapperPlugin;
-import com.exe201.tutorlink.main.dto.TutorSubjectDTO;
+import com.exe201.tutorlink.main.dto.tutor.TutorSubjectDTO;
+import com.exe201.tutorlink.main.dto.tutor.TutorSubjectSubDTO;
 import com.exe201.tutorlink.main.entity.TutorSubjects;
 import com.exe201.tutorlink.main.entity.Tutors;
 import com.exe201.tutorlink.main.repository.ITutorSubjectRepository;
@@ -27,6 +28,10 @@ public class TutorSubjectCrudPlugin extends AbstractCrudPlugin<TutorSubjects, Tu
 
     public List<TutorSubjectDTO> getSubjectByTutorId(Long tutorId){
         return repository.findByTutorId(tutorId).stream().map(plugin ::toDto ).toList();
+    }
+
+    public List<TutorSubjectSubDTO> getSubjectByListTutorId(List<Long> tutorId){
+        return repository.findByListTutorId(tutorId);
     }
 
     public List<TutorSubjectDTO> createList(List<TutorSubjectDTO> degreeDTOS, Tutors tutor){

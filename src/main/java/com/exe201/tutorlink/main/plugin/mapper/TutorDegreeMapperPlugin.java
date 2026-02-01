@@ -1,7 +1,7 @@
 package com.exe201.tutorlink.main.plugin.mapper;
 
 import com.exe201.tutorlink.common.plugin.AbstractMapperPlugin;
-import com.exe201.tutorlink.main.dto.TutorDegreeDTO;
+import com.exe201.tutorlink.main.dto.tutor.TutorDegreeDTO;
 import com.exe201.tutorlink.main.entity.TutorDegrees;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;

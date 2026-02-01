@@ -1,4 +1,5 @@
-package com.exe201.tutorlink.main.dto;
+package com.exe201.tutorlink.main.dto.tutor;
+
 
 import com.exe201.tutorlink.common.dto.pagination.PaginationSearchDTO;
 import lombok.Data;
@@ -10,8 +11,9 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class TutorSearchDTO extends PaginationSearchDTO {
+public class TutorSearchFilterDTO extends PaginationSearchDTO {
+    private String search;
+    private String area;
     private List<String> subjects;
     private List<String> grades;
-    private String area;
 }

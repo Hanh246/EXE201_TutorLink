@@ -3,10 +3,10 @@ package com.exe201.tutorlink.main.plugin.crud;
 import com.exe201.tutorlink.common.dto.pagination.PaginationSearchDTO;
 import com.exe201.tutorlink.common.plugin.AbstractCrudPlugin;
 import com.exe201.tutorlink.common.plugin.IMapperPlugin;
-import com.exe201.tutorlink.main.dto.TutorDTO;
-import com.exe201.tutorlink.main.dto.TutorSearchDTO;
+import com.exe201.tutorlink.main.dto.tutor.*;
 import com.exe201.tutorlink.main.entity.Tutors;
 import com.exe201.tutorlink.main.repository.ITutorRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,7 +14,10 @@ import org.springframework.plugin.core.PluginRegistry;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 public class TutorCrudPlugin extends AbstractCrudPlugin<Tutors, TutorDTO, Long, PaginationSearchDTO> {
@@ -24,19 +27,22 @@ public class TutorCrudPlugin extends AbstractCrudPlugin<Tutors, TutorDTO, Long, 
     private final TutorGradeCrudPlugin gradeCrud;
     private final TutorScheduleCrudPlugin scheduleCrud;
     private final TutorSubjectCrudPlugin subjectCrud;
+    private final ModelMapper mapper;
     @Autowired
     public TutorCrudPlugin(ITutorRepository repository,
                            PluginRegistry<IMapperPlugin, Class<?>> pluginRegistry,
                            TutorDegreeCrudPlugin degreeCrud,
                            TutorGradeCrudPlugin gradeCrud,
                            TutorScheduleCrudPlugin scheduleCrud,
-                           TutorSubjectCrudPlugin subjectCrud) {
+                           TutorSubjectCrudPlugin subjectCrud,
+                           ModelMapper mapper) {
         super(repository, pluginRegistry, Tutors.class);
         this.repository = repository;
         this.degreeCrud = degreeCrud;
         this.gradeCrud = gradeCrud;
         this.scheduleCrud = scheduleCrud;
         this.subjectCrud = subjectCrud;
+        this.mapper = mapper;
     }
 
     @Override
@@ -79,15 +85,31 @@ public class TutorCrudPlugin extends AbstractCrudPlugin<Tutors, TutorDTO, Long, 
         return result;
     }
 
-    public Page<TutorDTO> getTutorBySearch(TutorSearchDTO dto){
-        var paginationDTO = dto == null ? new TutorSearchDTO() : dto;
-        Pageable pageable = paginationDTO.toPageRequest();
-        String search = paginationDTO.getSearch();
-        String searchParam = (search != null) ? "%" + search.toLowerCase() + "%" : null;
-        return repository.search(pageable, searchParam, paginationDTO.getSubjects(),
-                paginationDTO.getGrades(), paginationDTO.getArea())
-                .map(plugin::toDto)
-                .map(this :: setDTO);
+    public Page<TutorSearchDTO> getTutorBySearch(TutorSearchFilterDTO dto){
+        TutorSearchFilterDTO filter = dto != null ? dto : new TutorSearchFilterDTO();
+        Pageable pageable = filter.toPageRequest();
+
+        String searchParam = Optional.ofNullable(filter.getSearch())
+                .filter(s -> !s.isBlank())
+                .map(s -> "%" + s.toLowerCase() + "%")
+                .orElse(null);
+
+        Page<Tutors> tutorPage = repository.search(
+                pageable,
+                searchParam,
+                filter.getSubjects(),
+                filter.getGrades(),
+                filter.getArea()
+        );
+
+        List<Long> tutorIds = tutorPage.getContent()
+                .stream()
+                .map(Tutors::getId)
+                .toList();
+
+        Map<Long, List<TutorSubjectDTO>> subjectMap = getSubjectsByTutorIds(tutorIds);
+
+        return tutorPage.map(tutor -> mapToSearchDTO(tutor, subjectMap));
     }
 
     private TutorDTO setDTO(TutorDTO dto){
@@ -96,5 +118,24 @@ public class TutorCrudPlugin extends AbstractCrudPlugin<Tutors, TutorDTO, Long, 
         dto.setSchedules(scheduleCrud.getScheduleByTutorId(dto.getId()));
         dto.setSubjects(subjectCrud.getSubjectByTutorId(dto.getId()));
         return dto;
+    }
+
+    private TutorSearchDTO mapToSearchDTO(Tutors tutor, Map<Long, List<TutorSubjectDTO>> subjectMap){
+        TutorSearchDTO dto = mapper.map(tutor, TutorSearchDTO.class);
+        dto.setSubjects(subjectMap.getOrDefault(tutor.getId(), List.of()));
+        return dto;
+    }
+
+    public Map<Long, List<TutorSubjectDTO>> getSubjectsByTutorIds(List<Long> tutorIds) {
+
+        List<TutorSubjectSubDTO> rows = subjectCrud.getSubjectByListTutorId(tutorIds);
+
+        return rows.stream()
+                .collect(Collectors.groupingBy(
+                        TutorSubjectSubDTO::getTutorId,
+                        Collectors.mapping(
+                                subDto -> mapper.map(subDto, TutorSubjectDTO.class),
+                                Collectors.toList())
+                ));
     }
 }
