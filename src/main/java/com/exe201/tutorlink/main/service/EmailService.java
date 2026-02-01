@@ -3,6 +3,7 @@ package com.exe201.tutorlink.main.service;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,10 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class EmailService {
     private final JavaMailSender mailSender;
+
+    @Value("${app.mail.from}")
+    private String fromEmail;
+
     private final Cache<String, String> otpCache = CacheBuilder.newBuilder()
             .expireAfterWrite(5, TimeUnit.MINUTES)
             .build();
@@ -26,6 +31,7 @@ public class EmailService {
 
     public void sendOtpEmail(String to, String otp) {
         SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(fromEmail);
         message.setTo(to);
         message.setSubject("Mã xác thực OTP - TutorLink");
         message.setText("Mã OTP của bạn là: " + otp + ". Mã có hiệu lực trong 5 phút.");
