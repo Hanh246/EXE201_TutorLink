@@ -12,8 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
-
 @RestController
 @RequestMapping("/user")
 public class UserController{
@@ -24,16 +22,16 @@ public class UserController{
 
     @PostMapping("/register-request")
     public ResponseEntity<BaseResponse<String>> requestOtp(@RequestBody UserDTO dto) {
-        Map<String,String> validator = validation.validateCreate(dto);
-        if(validator != null && !validator.isEmpty()){
-            Map<String,String> errors = UserValidator.convertKeys(validator);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(BaseResponse.<String>builder()
-                    .success(false)
-                    .data(null)
-                    .message("Đã có lỗi xảy ra")
-                    .errors(errors)
-                    .build());
-        }
+//        Map<String,String> validator = validation.validateCreate(dto);
+//        if(validator != null && !validator.isEmpty()){
+//            Map<String,String> errors = UserValidator.convertKeys(validator);
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(BaseResponse.<String>builder()
+//                    .success(false)
+//                    .data(null)
+//                    .message("Đã có lỗi xảy ra")
+//                    .errors(errors)
+//                    .build());
+//        }
         userService.requestRegistration(dto);
         return ResponseEntity.status(HttpStatus.ACCEPTED)
                 .body(BaseResponse.<String>builder()
