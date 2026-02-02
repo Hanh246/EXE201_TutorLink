@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/upload")
 public class UploadController {
@@ -25,6 +27,16 @@ public class UploadController {
             @RequestParam("file") MultipartFile file) {
         String url = cloudinaryService.uploadImage(file);
         return ResponseEntity.ok(BaseResponse.<String>builder()
+                .success(true)
+                .data(url)
+                .build());
+    }
+
+    @PostMapping(value = "/list-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<BaseResponse<List<String>>> uploadListImage(
+            @RequestParam("file") List<MultipartFile> file) {
+        List<String> url = cloudinaryService.uploadListImages(file);
+        return ResponseEntity.ok(BaseResponse.<List<String>>builder()
                 .success(true)
                 .data(url)
                 .build());

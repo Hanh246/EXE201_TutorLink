@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +35,25 @@ public class CloudinaryService {
         } catch (IOException e) {
             throw new RuntimeException("Gửi ảnh thất bại", e);
         }
+    }
+
+    public List<String> uploadListImages(List<MultipartFile> files) {
+        if (files == null || files.isEmpty()) {
+            throw new RuntimeException("Danh sách file trống");
+        }
+
+        List<String> urls = new ArrayList<>();
+
+        for (MultipartFile file : files) {
+            try {
+                String url = uploadImage(file);
+                urls.add(url);
+            } catch (Exception e) {
+                throw new RuntimeException("Lỗi khi upload file: " + file.getOriginalFilename(), e);
+            }
+        }
+
+        return urls;
     }
 
     private void validateImage(MultipartFile file) {
