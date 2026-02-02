@@ -25,6 +25,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
 
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("http://localhost:8080/**").permitAll()
                         .requestMatchers("/user/**").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll() // Mở cửa cho Swagger
                         .anyRequest().authenticated() // Tất cả các yêu cầu còn lại phải có Token
