@@ -69,12 +69,19 @@ public class TutorCrudPlugin extends AbstractCrudPlugin<Tutors, TutorDTO, Long, 
         return result;
     }
 
-    @Override
     @Transactional
-    public TutorDTO update(Long id, TutorDTO dto) throws RuntimeException {
+    public TutorDTO update(Long id, TutorDTO dto, List<String> url) throws RuntimeException {
         Tutors existingTutor = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Tutor không tồn tại"));
+        if (url != null && !url.isEmpty()){
+            List<TutorDegreeDTO> newDegreeDTOs = url.stream().map(link -> {
+                TutorDegreeDTO degree = new TutorDegreeDTO();
+                degree.setDegreeImageUrl(link);
+                return degree;
+            }).collect(Collectors.toList());
 
+            dto.getDegrees().addAll(newDegreeDTOs);
+        }
         plugin.updateModel(existingTutor, dto);
         existingTutor.setUpdateStatus(updateStatus(dto));
         Tutors updatedModel = repository.save(existingTutor);
