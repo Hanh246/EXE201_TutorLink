@@ -3,9 +3,11 @@ package com.exe201.tutorlink.main.plugin.crud;
 import com.exe201.tutorlink.common.dto.pagination.PaginationSearchDTO;
 import com.exe201.tutorlink.common.plugin.AbstractCrudPlugin;
 import com.exe201.tutorlink.common.plugin.IMapperPlugin;
+import com.exe201.tutorlink.main.constants.TutorUpdateStatusEnum;
 import com.exe201.tutorlink.main.dto.tutor.*;
 import com.exe201.tutorlink.main.entity.Tutors;
 import com.exe201.tutorlink.main.repository.ITutorRepository;
+import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -57,6 +59,7 @@ public class TutorCrudPlugin extends AbstractCrudPlugin<Tutors, TutorDTO, Long, 
     @Transactional
     public TutorDTO create(TutorDTO dto) throws RuntimeException {
         Tutors model = plugin.toModel(dto);
+        model.setUpdateStatus(TutorUpdateStatusEnum.FIRST);
         Tutors savedModel = repository.save(model);
         var result = plugin.toDto(savedModel);
             result.setDegrees(degreeCrud.createList(dto.getDegrees(), savedModel));
@@ -73,6 +76,7 @@ public class TutorCrudPlugin extends AbstractCrudPlugin<Tutors, TutorDTO, Long, 
                 .orElseThrow(() -> new RuntimeException("Tutor không tồn tại"));
 
         plugin.updateModel(existingTutor, dto);
+        existingTutor.setUpdateStatus(updateStatus(dto));
         Tutors updatedModel = repository.save(existingTutor);
 
         TutorDTO result = plugin.toDto(updatedModel);
@@ -137,5 +141,24 @@ public class TutorCrudPlugin extends AbstractCrudPlugin<Tutors, TutorDTO, Long, 
                                 subDto -> mapper.map(subDto, TutorSubjectDTO.class),
                                 Collectors.toList())
                 ));
+    }
+    private TutorUpdateStatusEnum updateStatus (TutorDTO dto){
+        if (hasSubjects(dto)) {
+            return TutorUpdateStatusEnum.PAGE_4;
+        }
+        if (StringUtils.isNotBlank(dto.getSchoolName())) {
+            return TutorUpdateStatusEnum.PAGE_3;
+        }
+        if (StringUtils.isNotBlank(dto.getSoCCCD())) {
+            return TutorUpdateStatusEnum.PAGE_2;
+        }
+        if (StringUtils.isNotBlank(dto.getName())) {
+            return TutorUpdateStatusEnum.PAGE_1;
+        }
+        return TutorUpdateStatusEnum.FIRST;
+    }
+
+    private boolean hasSubjects(TutorDTO dto) {
+        return dto.getSubjects() != null && !dto.getSubjects().isEmpty();
     }
 }

@@ -1,6 +1,7 @@
 package com.exe201.tutorlink.main.entity;
 
 import com.exe201.tutorlink.common.entity.BaseEntity;
+import com.exe201.tutorlink.main.constants.TutorUpdateStatusEnum;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -20,6 +21,8 @@ public class Tutors extends BaseEntity {
     private Users user;
     @Column(name = "Name")
     private String name;
+    @Column(name = "SoCCCD")
+    private String soCCCD;
     @Column(name = "BirthDate")
     private Date birthDate;
     @Column(name = "Gender")
@@ -38,4 +41,7 @@ public class Tutors extends BaseEntity {
 
     @Column(name = "Price")
     private Integer price;
+
+    @Column(name = "UpdateStatus")
+    private TutorUpdateStatusEnum updateStatus;
 }
